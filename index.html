@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinMango Sports Betting Reality Check</title>
+    <title>Modern Sports Betting Reality Check</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
         :root {
             --finmango-orange: #FF8C42;
             --finmango-green: #8AC25E;
+            --finmango-red: #FF4242;
             --text-black: #1A1A1A;
             --background: #F8FAFC;
             --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -29,12 +30,6 @@
             line-height: 1.6;
         }
 
-        @media (min-width: 768px) {
-            body {
-                padding: 2rem;
-            }
-        }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -45,179 +40,187 @@
         }
 
         .header {
-            padding: 1.5rem 1rem;
+            padding: 2.5rem;
             background: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             text-align: center;
-            gap: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .header {
-                padding: 2.5rem;
-                gap: 1.5rem;
-            }
         }
 
         .logo {
-            height: 40px;
-            transition: transform 0.3s ease;
-        }
-
-        @media (min-width: 768px) {
-            .logo {
-                height: 60px;
-            }
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
+            height: 60px;
+            margin-bottom: 1.5rem;
         }
 
         .title {
             color: var(--text-black);
-            font-size: 1.8rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            letter-spacing: -0.025em;
-            margin-bottom: 0.25rem;
-        }
-
-        @media (min-width: 768px) {
-            .title {
-                font-size: 2.5rem;
-                margin-bottom: 0.5rem;
-            }
+            margin-bottom: 1rem;
         }
 
         .subtitle {
             color: #64748B;
-            font-size: 1rem;
+            font-size: 1.125rem;
             max-width: 600px;
             margin: 0 auto;
         }
 
-        @media (min-width: 768px) {
-            .subtitle {
-                font-size: 1.125rem;
-            }
+        .simulation-controls {
+            padding: 1.5rem;
+            background: #F8FAFC;
+            border-radius: 16px;
+            margin: 1rem 2rem;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-black);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            background: #E2E8F0;
+            border-radius: 4px;
+            background-image: linear-gradient(var(--finmango-orange), var(--finmango-orange));
+            background-size: 50% 100%;
+            background-repeat: no-repeat;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--finmango-orange);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            -webkit-appearance: none;
+            box-shadow: none;
+            border: none;
+            background: transparent;
+        }
+
+        input[type="range"]::-moz-range-track {
+            height: 8px;
+            background: #E2E8F0;
+            border-radius: 4px;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--finmango-orange);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-moz-range-progress {
+            height: 8px;
+            background: var(--finmango-orange);
+            border-radius: 4px;
+        }
+
+        .slider-value {
+            min-width: 80px;
+            text-align: right;
+            font-weight: 600;
         }
 
         .stats-container {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .stats-container {
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 1.5rem;
-                padding: 2rem;
-            }
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
         }
 
         .stat-card {
             background: white;
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: 16px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
 
-        @media (min-width: 768px) {
-            .stat-card {
-                padding: 2rem;
-            }
-
-            .stat-card:hover {
-                transform: translateY(-5px);
-                box-shadow: var(--hover-shadow);
-            }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
         }
 
         .stat-label {
             color: #64748B;
-            font-size: 0.875rem;
+            font-size: 1rem;
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 768px) {
-            .stat-label {
-                font-size: 1rem;
-                margin-bottom: 0.75rem;
-            }
+            margin-bottom: 0.75rem;
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--text-black);
-            letter-spacing: -0.025em;
         }
 
-        @media (min-width: 768px) {
-            .stat-value {
-                font-size: 2.5rem;
-            }
+        .negative-balance {
+            color: var(--finmango-red);
+        }
+
+        .positive-balance {
+            color: var(--finmango-green);
         }
 
         .chart-container {
-            padding: 1rem;
+            padding: 2rem;
             background: white;
             border-radius: 16px;
-            margin: 1rem;
-            height: 300px;
+            margin: 2rem;
+            height: 400px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        @media (min-width: 768px) {
-            .chart-container {
-                padding: 2rem;
-                margin: 2rem;
-                height: 400px;
-            }
         }
 
         .button-container {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .button-container {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 1rem;
-                padding: 2rem;
-            }
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            padding: 2rem;
         }
 
         .button {
-            padding: 1rem 1.5rem;
+            padding: 1rem 2rem;
             border-radius: 12px;
             border: none;
             font-weight: 600;
-            font-size: 0.875rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-        }
-
-        @media (min-width: 768px) {
-            .button {
-                padding: 1rem 2rem;
-                font-size: 1rem;
-            }
         }
 
         .button:disabled {
@@ -247,160 +250,130 @@
             background: rgba(255, 140, 66, 0.05);
         }
 
-        .facts-container {
-            padding: 1.5rem;
+        .toggle-section {
+            margin: 2rem;
             background: white;
             border-radius: 16px;
-            margin: 1rem;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            overflow: hidden;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        @media (min-width: 768px) {
-            .facts-container {
-                padding: 2.5rem;
-                margin: 2rem;
-            }
-        }
-
-        .facts-title {
-            color: var(--text-black);
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1.25rem;
-            letter-spacing: -0.025em;
-        }
-
-        @media (min-width: 768px) {
-            .facts-title {
-                font-size: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-        }
-
-        .fact-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            background: rgba(248, 250, 252, 0.8);
-            border-radius: 12px;
-            transition: transform 0.2s ease;
-        }
-
-        @media (min-width: 768px) {
-            .fact-item {
-                padding: 1rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .fact-item:hover {
-                transform: translateX(5px);
-            }
-        }
-
-        .fact-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--finmango-orange);
-            border-radius: 50%;
-            margin-right: 0.75rem;
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 768px) {
-            .fact-dot {
-                width: 10px;
-                height: 10px;
-                margin-right: 1rem;
-            }
-        }
-
-        .negative-balance {
-            color: #EF4444;
-        }
-
-        .positive-balance {
-            color: #10B981;
-        }
-
-        .footer {
-            padding: 0 1rem 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .footer {
-                padding: 0 2rem 2rem;
-            }
-        }
-
-        .math-toggle {
-            width: 100%;
-            padding: 1rem;
-            background: transparent;
+        .toggle-header {
+            padding: 1.5rem;
+            background: white;
             border: none;
+            width: 100%;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            color: #64748B;
-            font-size: 0.875rem;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease;
         }
 
-        .math-toggle:hover {
-            color: var(--finmango-orange);
+        .toggle-header:hover {
+            background-color: #F8FAFC;
         }
 
-        .arrow {
+        .toggle-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-black);
+        }
+
+        .toggle-arrow {
             transition: transform 0.3s ease;
         }
 
-        .math-toggle.active .arrow {
+        .toggle-arrow.active {
             transform: rotate(180deg);
         }
 
-        .math-details {
+        .toggle-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease;
-        }
-
-        .math-details.active {
-            max-height: 1000px;
-        }
-
-        .math-content {
+            transition: max-height 0.3s ease;
             background: #F8FAFC;
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-top: 1rem;
-            font-size: 0.875rem;
         }
 
-        @media (min-width: 768px) {
-            .math-content {
-                padding: 2rem;
-                font-size: 1rem;
-            }
+        .toggle-content.active {
+            max-height: 2000px;
+        }
+
+        .toggle-inner {
+            padding: 1.5rem;
+        }
+
+        .awareness-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .awareness-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .awareness-card h4 {
+            color: var(--finmango-orange);
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+
+        .awareness-card p {
+            color: #64748B;
+            line-height: 1.6;
+        }
+
+        .resources-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+        }
+
+        .resources-section h4 {
+            color: var(--text-black);
+            margin-bottom: 1rem;
+        }
+
+        .resources-list {
+            list-style: none;
+        }
+
+        .resources-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #64748B;
+        }
+
+        .resources-list li::before {
+            content: "•";
+            color: var(--finmango-orange);
+            position: absolute;
+            left: 0.5rem;
         }
 
         .math-section {
             margin-bottom: 1.5rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
         }
 
         .math-section h5 {
             color: var(--finmango-orange);
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
         }
 
         .math-section p {
             color: #64748B;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
 
         .math-section ul {
@@ -421,17 +394,67 @@
             position: absolute;
             left: -0.5rem;
         }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem;
+            }
+
+            .title {
+                font-size: 1.8rem;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .chart-container {
+                margin: 1rem;
+                height: 300px;
+            }
+
+            .awareness-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toggle-section {
+                margin: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <img src="finmango.png" alt="FinMango Logo" class="logo">
-            <div>
-                <h1 class="title">Sports Betting Reality Check</h1>
-                <p class="subtitle">Experience the mathematical reality of sports betting through this interactive simulation</p>
-            </div>
+            <img src="/api/placeholder/200/60" alt="FinMango Logo" class="logo">
+            <h1 class="title">Modern Sports Betting Reality Check</h1>
+            <p class="subtitle">Experience the reality of online sports betting through this interactive simulation</p>
         </header>
+
+        <div class="simulation-controls">
+            <div class="control-group">
+                <label class="control-label">Initial Deposit</label>
+                <div class="slider-container">
+                    <input type="range" id="depositSlider" min="100" max="5000" step="100" value="1000">
+                    <span class="slider-value" id="depositValue">$1,000</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Base Bet Amount (% of balance)</label>
+                <div class="slider-container">
+                    <input type="range" id="betPercentSlider" min="1" max="50" value="10">
+                    <span class="slider-value" id="betPercentValue">10%</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Chase Losses Factor</label>
+                <div class="slider-container">
+                    <input type="range" id="chaseFactorSlider" min="100" max="200" step="10" value="100">
+                    <span class="slider-value" id="chaseFactorValue">1x</span>
+                </div>
+            </div>
+        </div>
 
         <div class="stats-container">
             <div class="stat-card">
@@ -439,12 +462,12 @@
                 <div class="stat-value" id="balance">$1,000</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Bets Placed</div>
-                <div class="stat-value" id="bets">0</div>
+                <div class="stat-label">Total Wagered</div>
+                <div class="stat-value" id="wagered">$0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Bet Amount</div>
-                <div class="stat-value">$100</div>
+                <div class="stat-label">Bets Placed</div>
+                <div class="stat-value" id="bets">0</div>
             </div>
         </div>
 
@@ -453,37 +476,57 @@
         </div>
 
         <div class="button-container">
-            <button id="betButton" class="button button-primary">Place $100 Bet</button>
-            <button id="realityButton" class="button button-secondary">Show Long-Term Reality</button>
-            <button id="resetButton" class="button button-secondary">Reset Simulation</button>
+                <button id="placeBetButton" class="button button-primary">Place Bet</button>
+            <button id="autoPlayButton" class="button button-secondary">Auto Play</button>
+            <button id="resetButton" class="button button-secondary">Reset</button>
         </div>
 
-        <div class="facts-container">
-            <h3 class="facts-title">Important Facts About Sports Betting</h3>
-            <div class="fact-item">
-                <div class="fact-dot"></div>
-                <div>The house edge in sports betting is typically 4.5%, ensuring consistent profits for bookmakers</div>
-            </div>
-            <div class="fact-item">
-                <div class="fact-dot"></div>
-                <div>Even skilled bettors lose money over time due to this mathematical edge</div>
-            </div>
-            <div class="fact-item">
-                <div class="fact-dot"></div>
-                <div>More betting increases your likelihood of overall losses due to the house advantage</div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <button class="math-toggle" onclick="toggleMathDetails()">
-                <span>How does the math work?</span>
-                <svg class="arrow" viewBox="0 0 24 24" width="24" height="24">
-                    <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <div class="toggle-section">
+            <button class="toggle-header" onclick="toggleSection('understanding')">
+                <span class="toggle-title">Understanding Online Sports Betting</span>
+                <svg class="toggle-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
             </button>
-            <div class="math-details" id="mathDetails">
-                <div class="math-content">
-                    <h4>The Mathematics Behind Sports Betting</h4>
+            <div class="toggle-content" id="understanding-content">
+                <div class="toggle-inner">
+                    <div class="awareness-grid">
+                        <div class="awareness-card">
+                            <h4>The Digital Acceleration</h4>
+                            <p>Online betting apps remove traditional barriers and friction points that once limited betting frequency and amounts. Push notifications, one-click deposits, and 24/7 access can lead to more frequent betting than intended.</p>
+                        </div>
+                        <div class="awareness-card">
+                            <h4>Psychological Design</h4>
+                            <p>Modern betting apps use sophisticated design techniques similar to social media platforms to maximize engagement. Features like "cash out," live betting, and parlay builders are specifically designed to encourage more betting.</p>
+                        </div>
+                        <div class="awareness-card">
+                            <h4>The Chase Response</h4>
+                            <p>"Chasing losses" - increasing bet sizes to recover previous losses - is a common behavior that online platforms make easier than ever. This simulator demonstrates how this pattern typically leads to larger losses.</p>
+                        </div>
+                    </div>
+
+                    <div class="resources-section">
+                        <h4>Need Support?</h4>
+                        <ul class="resources-list">
+                            <li>National Problem Gambling Helpline: 1-800-522-4700 (24/7 Confidential)</li>
+                            <li>Gamblers Anonymous: www.gamblersanonymous.org</li>
+                            <li>National Council on Problem Gambling: www.ncpgambling.org</li>
+                            <li>Self-Exclusion Programs: Available through your state's gaming commission</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toggle-section">
+            <button class="toggle-header" onclick="toggleSection('math')">
+                <span class="toggle-title">How Does the Math Work?</span>
+                <svg class="toggle-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <div class="toggle-content" id="math-content">
+                <div class="toggle-inner">
                     <div class="math-section">
                         <h5>House Edge</h5>
                         <p>In a typical sports bet:</p>
@@ -508,26 +551,16 @@
     </div>
 
     <script>
+        // State variables
         let balance = 1000;
+        let totalWagered = 0;
         let betsPlaced = 0;
-        let betAmount = 100;
+        let lastBetLoss = 0;
+        let autoPlayInterval = null;
         let isSimulating = false;
         let seedArray = [];
-        
-        // Generate predetermined outcomes for consistency
-        function generateOutcomes(count) {
-            const outcomes = [];
-            let seed = 1;
-            for (let i = 0; i < count; i++) {
-                seed = (seed * 9301 + 49297) % 233280;
-                outcomes.push(seed / 233280);
-            }
-            return outcomes;
-        }
 
-        // Generate 100 fixed outcomes for consistency
-        seedArray = generateOutcomes(100);
-
+        // Initialize Chart
         const ctx = document.getElementById('balanceChart').getContext('2d');
         const balanceChart = new Chart(ctx, {
             type: 'line',
@@ -583,85 +616,164 @@
             }
         });
 
-        function calculateBetResult(betNumber) {
-            const winProbability = 0.477;
-            const won = seedArray[betNumber] < winProbability;
-            
-            if (won) {
-                return Math.round(balance + (betAmount * 0.91));
-            } else {
-                return Math.round(balance - betAmount);
+        // Generate predetermined outcomes for consistency
+        function generateOutcomes(count) {
+            const outcomes = [];
+            let seed = 1;
+            for (let i = 0; i < count; i++) {
+                seed = (seed * 9301 + 49297) % 233280;
+                outcomes.push(seed / 233280);
             }
+            return outcomes;
+        }
+
+        // Initialize seed array
+        seedArray = generateOutcomes(1000);
+
+        // UI update functions
+        function updateSliderBackground(slider) {
+            const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+            slider.style.backgroundSize = `${value}% 100%`;
         }
 
         function updateDisplay() {
-            const balanceElement = document.getElementById('balance');
-            balanceElement.textContent = `$${balance.toLocaleString()}`;
-            balanceElement.className = 'stat-value ' + 
-                (balance < 1000 ? 'negative-balance' : 'positive-balance');
+            document.getElementById('balance').textContent = `$${Math.round(balance).toLocaleString()}`;
+            document.getElementById('balance').className = 
+                'stat-value ' + (balance >= initialBalance ? 'positive-balance' : 'negative-balance');
             
-            document.getElementById('bets').textContent = betsPlaced;
-            
+            document.getElementById('wagered').textContent = `$${Math.round(totalWagered).toLocaleString()}`;
+            document.getElementById('bets').textContent = betsPlaced.toString();
+
             balanceChart.data.labels.push(betsPlaced);
             balanceChart.data.datasets[0].data.push(balance);
             balanceChart.update();
         }
 
+        // Slider event listeners and initialization
+        const depositSlider = document.getElementById('depositSlider');
+        const betPercentSlider = document.getElementById('betPercentSlider');
+        const chaseFactorSlider = document.getElementById('chaseFactorSlider');
+
+        function initializeSliders() {
+            // Initialize deposit slider
+            depositSlider.addEventListener('input', function() {
+                document.getElementById('depositValue').textContent = `$${this.value}`;
+                updateSliderBackground(this);
+                resetSimulation();
+            });
+
+            // Initialize bet percent slider
+            betPercentSlider.addEventListener('input', function() {
+                document.getElementById('betPercentValue').textContent = `${this.value}%`;
+                updateSliderBackground(this);
+            });
+
+            // Initialize chase factor slider
+            chaseFactorSlider.addEventListener('input', function() {
+                const factor = this.value / 100;
+                document.getElementById('chaseFactorValue').textContent = `${factor}x`;
+                updateSliderBackground(this);
+            });
+
+            // Initialize all slider backgrounds
+            document.querySelectorAll('input[type="range"]').forEach(slider => {
+                updateSliderBackground(slider);
+            });
+        }
+
+        // Betting mechanics
+        function calculateBetAmount() {
+            const baseAmount = (balance * (betPercentSlider.value / 100));
+            const chaseFactor = lastBetLoss > 0 ? (chaseFactorSlider.value / 100) : 1;
+            return Math.min(balance, baseAmount * chaseFactor);
+        }
+
         function placeBet() {
-            if (balance < betAmount || isSimulating || betsPlaced >= 100) return;
+            if (balance <= 0 || isSimulating) return;
+
+            const betAmount = calculateBetAmount();
+            if (betAmount <= 0) return;
+
+            const winProbability = 0.477; // True probability based on -110 odds
+            const won = seedArray[betsPlaced % seedArray.length] < winProbability;
+
+            totalWagered += betAmount;
             
-            balance = calculateBetResult(betsPlaced);
+            if (won) {
+                balance += (betAmount * 0.91);
+                lastBetLoss = 0;
+            } else {
+                balance -= betAmount;
+                lastBetLoss = betAmount;
+            }
+
             betsPlaced++;
+            balance = Math.round(balance * 100) / 100; // Round to 2 decimal places
             updateDisplay();
         }
 
-        function showReality() {
-            if (isSimulating) return;
-            isSimulating = true;
-            
-            balance = 1000;
-            betsPlaced = 0;
-            balanceChart.data.labels = ['Start'];
-            balanceChart.data.datasets[0].data = [1000];
-            
-            let bet = 0;
-            const simulate = setInterval(() => {
-                if (bet >= 100) {
-                    clearInterval(simulate);
-                    isSimulating = false;
-                    return;
-                }
-                
-                balance = calculateBetResult(bet);
-                betsPlaced++;
-                updateDisplay();
-                bet++;
-            }, 50);
+        // Auto play functionality
+        function toggleAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                document.getElementById('autoPlayButton').textContent = 'Auto Play';
+                isSimulating = false;
+            } else {
+                autoPlayInterval = setInterval(() => {
+                    if (balance <= 0) {
+                        clearInterval(autoPlayInterval);
+                        autoPlayInterval = null;
+                        document.getElementById('autoPlayButton').textContent = 'Auto Play';
+                        isSimulating = false;
+                        return;
+                    }
+                    placeBet();
+                }, 100);
+                document.getElementById('autoPlayButton').textContent = 'Stop Auto';
+                isSimulating = true;
+            }
         }
 
-        function reset() {
-            if (isSimulating) return;
-            
-            balance = 1000;
+        // Reset functionality
+        function resetSimulation() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                document.getElementById('autoPlayButton').textContent = 'Auto Play';
+            }
+
+            initialBalance = parseInt(depositSlider.value);
+            balance = initialBalance;
+            totalWagered = 0;
             betsPlaced = 0;
+            lastBetLoss = 0;
+            isSimulating = false;
+
             balanceChart.data.labels = ['Start'];
-            balanceChart.data.datasets[0].data = [1000];
+            balanceChart.data.datasets[0].data = [balance];
             balanceChart.update();
+
             updateDisplay();
         }
 
-        function toggleMathDetails() {
-            const mathDetails = document.getElementById('mathDetails');
-            const mathToggle = document.querySelector('.math-toggle');
-            mathDetails.classList.toggle('active');
-            mathToggle.classList.toggle('active');
+        // Toggle sections functionality
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const arrow = content.previousElementSibling.querySelector('.toggle-arrow');
+            content.classList.toggle('active');
+            arrow.classList.toggle('active');
         }
 
-        document.getElementById('betButton').addEventListener('click', placeBet);
-        document.getElementById('realityButton').addEventListener('click', showReality);
-        document.getElementById('resetButton').addEventListener('click', reset);
+        // Initialize event listeners
+        document.getElementById('placeBetButton').addEventListener('click', placeBet);
+        document.getElementById('autoPlayButton').addEventListener('click', toggleAutoPlay);
+        document.getElementById('resetButton').addEventListener('click', resetSimulation);
+
+        // Initialize the simulation
+        let initialBalance = parseInt(depositSlider.value);
+        initializeSliders();
+        resetSimulation();
     </script>
 </body>
 </html>
-
-    
