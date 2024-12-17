@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Betting Reality Check</title>
+    <title>Modern Sports Betting Reality Check</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
         :root {
@@ -404,8 +404,8 @@
 <body>
     <div class="container">
         <header class="header">
-            <img src="finmango.png" alt="FinMango Logo" class="logo">
-            <h1 class="title">Sports Betting Reality Check</h1>
+            <img src="/api/placeholder/200/60" alt="FinMango Logo" class="logo">
+            <h1 class="title">Modern Sports Betting Reality Check</h1>
             <p class="subtitle">Experience the reality of online sports betting through this interactive simulation</p>
         </header>
 
@@ -565,6 +565,7 @@
                 scales: {
                     y: {
                         beginAtZero: false,
+                        suggestedMin: -10000,
                         grid: {
                             color: 'rgba(0, 0, 0, 0.05)'
                         },
@@ -627,23 +628,30 @@
         }
 
         function calculateBetAmount() {
-            const currentBalance = Math.abs(balance);
-            const baseAmount = (currentBalance * (betPercentSlider.value / 100));
+            // Always use the current bet percentage, even with negative balance
+            const baseAmount = Math.abs(balance * (betPercentSlider.value / 100));
+            
+            // Apply chase factor if previous bet was a loss
             const chaseFactor = lastBetLoss > 0 ? (chaseFactorSlider.value / 100) : 1;
-            const betAmount = baseAmount * chaseFactor;
-            return Math.min(betAmount, Math.abs(DEBT_LIMIT - balance));
+            
+            // Calculate final bet amount
+            let betAmount = baseAmount * chaseFactor;
+            
+            // Only limit bets when we hit the debt limit
+            if (balance - betAmount < DEBT_LIMIT) {
+                betAmount = Math.abs(DEBT_LIMIT - balance);
+            }
+            
+            return betAmount;
         }
 
         function placeBet() {
+            const betAmount = calculateBetAmount();
+            
+            // Only stop if we've hit the absolute debt limit
             if (balance <= DEBT_LIMIT) {
                 stopAutoPlay();
                 alert("You've hit your credit limit of -$10,000. No more bets allowed.");
-                return;
-            }
-
-            const betAmount = calculateBetAmount();
-            if (betAmount <= 0) {
-                stopAutoPlay();
                 return;
             }
 
