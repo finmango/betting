@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Betting Reality Check</title>
+    <title>Modern Sports Betting Reality Check</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
         :root {
@@ -427,8 +427,8 @@
 <body>
     <div class="container">
         <header class="header">
-            <img src="finmango.png" alt="FinMango Logo" class="logo">
-            <h1 class="title">Sports Betting Reality Check</h1>
+            <img src="/api/placeholder/200/60" alt="FinMango Logo" class="logo">
+            <h1 class="title">Modern Sports Betting Reality Check</h1>
             <p class="subtitle">Experience the reality of online sports betting through this interactive simulation</p>
         </header>
 
@@ -598,6 +598,11 @@
                                 size: 14,
                                 weight: '500'
                             }
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value < 0 ? `-$${Math.abs(value).toLocaleString()}` : `$${value.toLocaleString()}`;
+                            }
                         }
                     },
                     x: {
@@ -624,9 +629,13 @@
         }
 
         function updateDisplay() {
-            document.getElementById('balance').textContent = `$${Math.round(balance).toLocaleString()}`;
+            // Format balance with negative sign when appropriate
+            const balanceText = balance < 0 ? `-$${Math.abs(Math.round(balance)).toLocaleString()}` : `$${Math.round(balance).toLocaleString()}`;
+            document.getElementById('balance').textContent = balanceText;
+            
+            // Always show red for negative balance, green for positive
             document.getElementById('balance').className = 
-                'stat-value ' + (balance >= initialBalance ? 'positive-balance' : 'negative-balance');
+                'stat-value ' + (balance >= 0 ? 'positive-balance' : 'negative-balance');
             
             document.getElementById('wagered').textContent = `$${Math.round(totalWagered).toLocaleString()}`;
             document.getElementById('bets').textContent = betsPlaced.toString();
@@ -635,7 +644,7 @@
             balanceChart.data.datasets[0].data.push(balance);
             balanceChart.update();
 
-            // Disable betting if debt limit reached
+            // Update button states
             const betDisabled = balance <= DEBT_LIMIT;
             document.getElementById('placeBetButton').disabled = betDisabled || isSimulating;
             if (betDisabled) {
@@ -645,16 +654,25 @@
 
         // Betting mechanics
         function calculateBetAmount() {
-            // Allow betting even with negative balance, but respect debt limit
-            const availableAmount = Math.min(Math.abs(DEBT_LIMIT - balance), Math.abs(balance));
-            const baseAmount = (availableAmount * (betPercentSlider.value / 100));
+            // For negative balances, use the absolute value for calculation
+            const currentBalance = Math.abs(balance);
+            // Calculate base amount from current balance (whether positive or negative)
+            const baseAmount = (currentBalance * (betPercentSlider.value / 100));
+            
+            // Apply chase factor if previous bet was a loss
             const chaseFactor = lastBetLoss > 0 ? (chaseFactorSlider.value / 100) : 1;
-            return baseAmount * chaseFactor;
+            
+            // Calculate final bet amount
+            const betAmount = baseAmount * chaseFactor;
+            
+            // Allow betting even when in debt, until hitting debt limit
+            return Math.min(betAmount, Math.abs(DEBT_LIMIT - balance));
         }
 
         function placeBet() {
             if (balance <= DEBT_LIMIT) {
                 stopAutoPlay();
+                alert("You've hit your credit limit of -$10,000. No more bets allowed.");
                 return;
             }
 
@@ -682,8 +700,10 @@
             balance = Math.round(balance * 100) / 100; // Round to 2 decimal places
             updateDisplay();
 
+            // Check for debt limit after updating display
             if (balance <= DEBT_LIMIT) {
                 stopAutoPlay();
+                alert("You've hit your credit limit of -$10,000. No more bets allowed.");
             }
         }
 
