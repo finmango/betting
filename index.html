@@ -358,43 +358,6 @@
             left: 0.5rem;
         }
 
-        .math-section {
-            margin-bottom: 1.5rem;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-        }
-
-        .math-section h5 {
-            color: var(--finmango-orange);
-            font-size: 1.125rem;
-            margin-bottom: 1rem;
-        }
-
-        .math-section p {
-            color: #64748B;
-            margin-bottom: 0.75rem;
-        }
-
-        .math-section ul {
-            list-style: none;
-            padding-left: 1rem;
-        }
-
-        .math-section li {
-            color: #64748B;
-            margin-bottom: 0.5rem;
-            position: relative;
-            padding-left: 1rem;
-        }
-
-        .math-section li::before {
-            content: "•";
-            color: var(--finmango-orange);
-            position: absolute;
-            left: -0.5rem;
-        }
-
         @media (max-width: 768px) {
             .header {
                 padding: 1.5rem;
@@ -476,7 +439,7 @@
         </div>
 
         <div class="button-container">
-                <button id="placeBetButton" class="button button-primary">Place Bet</button>
+            <button id="placeBetButton" class="button button-primary">Place Bet</button>
             <button id="autoPlayButton" class="button button-secondary">Auto Play</button>
             <button id="resetButton" class="button button-secondary">Reset</button>
         </div>
@@ -492,7 +455,7 @@
                 <div class="toggle-inner">
                     <div class="awareness-grid">
                         <div class="awareness-card">
-                            <h4>The Digital Acceleration</h4>
+              <h4>The Digital Acceleration</h4>
                             <p>Online betting apps remove traditional barriers and friction points that once limited betting frequency and amounts. Push notifications, one-click deposits, and 24/7 access can lead to more frequent betting than intended.</p>
                         </div>
                         <div class="awareness-card">
@@ -517,37 +480,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="toggle-section">
-            <button class="toggle-header" onclick="toggleSection('math')">
-                <span class="toggle-title">How Does the Math Work?</span>
-                <svg class="toggle-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </button>
-            <div class="toggle-content" id="math-content">
-                <div class="toggle-inner">
-                    <div class="math-section">
-                        <h5>House Edge</h5>
-                        <p>In a typical sports bet:</p>
-                        <ul>
-                            <li>You bet $100 to win $91 (standard -110 odds)</li>
-                            <li>True probability of winning each bet: 47.7%</li>
-                            <li>Expected value per $100 bet: (0.477 × $91) - (0.523 × $100) = -$4.50</li>
-                        </ul>
-                    </div>
-                    <div class="math-section">
-                        <h5>Long-Term Impact</h5>
-                        <p>Over time, this 4.5% house edge compounds:</p>
-                        <ul>
-                            <li>Each bet has 95.5% expected return</li>
-                            <li>After 100 bets: Initial amount × (0.955)¹⁰⁰</li>
-                            <li>This explains why sustained betting leads to predictable losses</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -558,7 +490,7 @@
         let lastBetLoss = 0;
         let autoPlayInterval = null;
         let isSimulating = false;
-        let seedArray = [];
+        let initialBalance = 1000;
 
         // Initialize Chart
         const ctx = document.getElementById('balanceChart').getContext('2d');
@@ -616,20 +548,6 @@
             }
         });
 
-        // Generate predetermined outcomes for consistency
-        function generateOutcomes(count) {
-            const outcomes = [];
-            let seed = 1;
-            for (let i = 0; i < count; i++) {
-                seed = (seed * 9301 + 49297) % 233280;
-                outcomes.push(seed / 233280);
-            }
-            return outcomes;
-        }
-
-        // Initialize seed array
-        seedArray = generateOutcomes(1000);
-
         // UI update functions
         function updateSliderBackground(slider) {
             const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
@@ -649,6 +567,103 @@
             balanceChart.update();
         }
 
+        // Betting mechanics
+        function calculateBetAmount() {
+            const baseAmount = (balance * (betPercentSlider.value / 100));
+            const chaseFactor = lastBetLoss > 0 ? (chaseFactorSlider.value / 100) : 1;
+            return Math.min(balance, baseAmount * chaseFactor);
+        }
+
+        function placeBet() {
+            if (balance <= 0) {
+                stopAutoPlay();
+                return;
+            }
+
+            const betAmount = calculateBetAmount();
+            if (betAmount <= 0) {
+                stopAutoPlay();
+                return;
+            }
+
+            const winProbability = 0.477; // True probability based on -110 odds
+            const randomValue = Math.random();
+            const won = randomValue < winProbability;
+
+            totalWagered += betAmount;
+            
+            if (won) {
+                balance += (betAmount * 0.91);
+                lastBetLoss = 0;
+            } else {
+                balance -= betAmount;
+                lastBetLoss = betAmount;
+            }
+
+            betsPlaced++;
+            balance = Math.round(balance * 100) / 100; // Round to 2 decimal places
+            updateDisplay();
+
+            if (balance <= 0) {
+                stopAutoPlay();
+            }
+        }
+
+        // Auto play functionality
+        function startAutoPlay() {
+            if (!autoPlayInterval && balance > 0) {
+                autoPlayInterval = setInterval(placeBet, 100);
+                document.getElementById('autoPlayButton').textContent = 'Stop Auto';
+                document.getElementById('placeBetButton').disabled = true;
+                isSimulating = true;
+            }
+        }
+
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                document.getElementById('autoPlayButton').textContent = 'Auto Play';
+                document.getElementById('placeBetButton').disabled = false;
+                isSimulating = false;
+            }
+        }
+
+        function toggleAutoPlay() {
+            if (autoPlayInterval) {
+                stopAutoPlay();
+            } else {
+                startAutoPlay();
+            }
+        }
+
+        // Reset functionality
+        function resetSimulation() {
+            stopAutoPlay();
+            
+            initialBalance = parseInt(depositSlider.value);
+            balance = initialBalance;
+            totalWagered = 0;
+            betsPlaced = 0;
+            lastBetLoss = 0;
+            isSimulating = false;
+
+            balanceChart.data.labels = ['Start'];
+            balanceChart.data.datasets[0].data = [balance];
+            balanceChart.update();
+
+            document.getElementById('placeBetButton').disabled = false;
+            updateDisplay();
+        }
+
+        // Toggle sections functionality
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const arrow = content.previousElementSibling.querySelector('.toggle-arrow');
+            content.classList.toggle('active');
+            arrow.classList.toggle('active');
+        }
+
         // Slider event listeners and initialization
         const depositSlider = document.getElementById('depositSlider');
         const betPercentSlider = document.getElementById('betPercentSlider');
@@ -659,7 +674,6 @@
             depositSlider.addEventListener('input', function() {
                 document.getElementById('depositValue').textContent = `$${this.value}`;
                 updateSliderBackground(this);
-                resetSimulation();
             });
 
             // Initialize bet percent slider
@@ -681,97 +695,12 @@
             });
         }
 
-        // Betting mechanics
-        function calculateBetAmount() {
-            const baseAmount = (balance * (betPercentSlider.value / 100));
-            const chaseFactor = lastBetLoss > 0 ? (chaseFactorSlider.value / 100) : 1;
-            return Math.min(balance, baseAmount * chaseFactor);
-        }
-
-        function placeBet() {
-            if (balance <= 0 || isSimulating) return;
-
-            const betAmount = calculateBetAmount();
-            if (betAmount <= 0) return;
-
-            const winProbability = 0.477; // True probability based on -110 odds
-            const won = seedArray[betsPlaced % seedArray.length] < winProbability;
-
-            totalWagered += betAmount;
-            
-            if (won) {
-                balance += (betAmount * 0.91);
-                lastBetLoss = 0;
-            } else {
-                balance -= betAmount;
-                lastBetLoss = betAmount;
-            }
-
-            betsPlaced++;
-            balance = Math.round(balance * 100) / 100; // Round to 2 decimal places
-            updateDisplay();
-        }
-
-        // Auto play functionality
-        function toggleAutoPlay() {
-            if (autoPlayInterval) {
-                clearInterval(autoPlayInterval);
-                autoPlayInterval = null;
-                document.getElementById('autoPlayButton').textContent = 'Auto Play';
-                isSimulating = false;
-            } else {
-                autoPlayInterval = setInterval(() => {
-                    if (balance <= 0) {
-                        clearInterval(autoPlayInterval);
-                        autoPlayInterval = null;
-                        document.getElementById('autoPlayButton').textContent = 'Auto Play';
-                        isSimulating = false;
-                        return;
-                    }
-                    placeBet();
-                }, 100);
-                document.getElementById('autoPlayButton').textContent = 'Stop Auto';
-                isSimulating = true;
-            }
-        }
-
-        // Reset functionality
-        function resetSimulation() {
-            if (autoPlayInterval) {
-                clearInterval(autoPlayInterval);
-                autoPlayInterval = null;
-                document.getElementById('autoPlayButton').textContent = 'Auto Play';
-            }
-
-            initialBalance = parseInt(depositSlider.value);
-            balance = initialBalance;
-            totalWagered = 0;
-            betsPlaced = 0;
-            lastBetLoss = 0;
-            isSimulating = false;
-
-            balanceChart.data.labels = ['Start'];
-            balanceChart.data.datasets[0].data = [balance];
-            balanceChart.update();
-
-            updateDisplay();
-        }
-
-        // Toggle sections functionality
-        function toggleSection(sectionId) {
-            const content = document.getElementById(`${sectionId}-content`);
-            const arrow = content.previousElementSibling.querySelector('.toggle-arrow');
-            content.classList.toggle('active');
-            arrow.classList.toggle('active');
-        }
-
         // Initialize event listeners
         document.getElementById('placeBetButton').addEventListener('click', placeBet);
         document.getElementById('autoPlayButton').addEventListener('click', toggleAutoPlay);
         document.getElementById('resetButton').addEventListener('click', resetSimulation);
 
         // Initialize the simulation
-        let initialBalance = parseInt(depositSlider.value);
         initializeSliders();
         resetSimulation();
     </script>
