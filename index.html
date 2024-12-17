@@ -358,6 +358,43 @@
             left: 0.5rem;
         }
 
+        .math-section {
+            margin-bottom: 1.5rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .math-section h5 {
+            color: var(--finmango-orange);
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+
+        .math-section p {
+            color: #64748B;
+            margin-bottom: 0.75rem;
+        }
+
+        .math-section ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .math-section li {
+            color: #64748B;
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .math-section li::before {
+            content: "•";
+            color: var(--finmango-orange);
+            position: absolute;
+            left: -0.5rem;
+        }
+
         @media (max-width: 768px) {
             .header {
                 padding: 1.5rem;
@@ -390,8 +427,8 @@
 <body>
     <div class="container">
         <header class="header">
-            <img src="finmango.png" alt="FinMango Logo" class="logo">
-            <h1 class="title">Sports Betting Reality Check</h1>
+            <img src="/api/placeholder/200/60" alt="FinMango Logo" class="logo">
+            <h1 class="title">Modern Sports Betting Reality Check</h1>
             <p class="subtitle">Experience the reality of online sports betting through this interactive simulation</p>
         </header>
 
@@ -455,7 +492,7 @@
                 <div class="toggle-inner">
                     <div class="awareness-grid">
                         <div class="awareness-card">
-              <h4>The Digital Acceleration</h4>
+                            <h4>The Digital Acceleration</h4>
                             <p>Online betting apps remove traditional barriers and friction points that once limited betting frequency and amounts. Push notifications, one-click deposits, and 24/7 access can lead to more frequent betting than intended.</p>
                         </div>
                         <div class="awareness-card">
@@ -480,6 +517,37 @@
                 </div>
             </div>
         </div>
+
+        <div class="toggle-section">
+            <button class="toggle-header" onclick="toggleSection('math')">
+                <span class="toggle-title">How Does the Math Work?</span>
+                <svg class="toggle-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <div class="toggle-content" id="math-content">
+                <div class="toggle-inner">
+                    <div class="math-section">
+                        <h5>House Edge</h5>
+                        <p>In a typical sports bet:</p>
+                        <ul>
+                            <li>You bet $100 to win $91 (standard -110 odds)</li>
+                            <li>True probability of winning each bet: 47.7%</li>
+                            <li>Expected value per $100 bet: (0.477 × $91) - (0.523 × $100) = -$4.50</li>
+                        </ul>
+                    </div>
+                    <div class="math-section">
+                        <h5>Long-Term Impact</h5>
+                        <p>Over time, this 4.5% house edge compounds:</p>
+                        <ul>
+                            <li>Each bet has 95.5% expected return</li>
+                            <li>After 100 bets: Initial amount × (0.955)¹⁰⁰</li>
+                            <li>This explains why sustained betting leads to predictable losses</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -491,6 +559,7 @@
         let autoPlayInterval = null;
         let isSimulating = false;
         let initialBalance = 1000;
+        const DEBT_LIMIT = -10000; // Allow up to $10,000 in debt
 
         // Initialize Chart
         const ctx = document.getElementById('balanceChart').getContext('2d');
@@ -565,17 +634,26 @@
             balanceChart.data.labels.push(betsPlaced);
             balanceChart.data.datasets[0].data.push(balance);
             balanceChart.update();
+
+            // Disable betting if debt limit reached
+            const betDisabled = balance <= DEBT_LIMIT;
+            document.getElementById('placeBetButton').disabled = betDisabled || isSimulating;
+            if (betDisabled) {
+                document.getElementById('autoPlayButton').textContent = 'Auto Play';
+            }
         }
 
         // Betting mechanics
         function calculateBetAmount() {
-            const baseAmount = (balance * (betPercentSlider.value / 100));
+            // Allow betting even with negative balance, but respect debt limit
+            const availableAmount = Math.min(Math.abs(DEBT_LIMIT - balance), Math.abs(balance));
+            const baseAmount = (availableAmount * (betPercentSlider.value / 100));
             const chaseFactor = lastBetLoss > 0 ? (chaseFactorSlider.value / 100) : 1;
-            return Math.min(balance, baseAmount * chaseFactor);
+            return baseAmount * chaseFactor;
         }
 
         function placeBet() {
-            if (balance <= 0) {
+            if (balance <= DEBT_LIMIT) {
                 stopAutoPlay();
                 return;
             }
@@ -604,14 +682,14 @@
             balance = Math.round(balance * 100) / 100; // Round to 2 decimal places
             updateDisplay();
 
-            if (balance <= 0) {
+            if (balance <= DEBT_LIMIT) {
                 stopAutoPlay();
             }
         }
 
         // Auto play functionality
         function startAutoPlay() {
-            if (!autoPlayInterval && balance > 0) {
+            if (!autoPlayInterval && balance > DEBT_LIMIT) {
                 autoPlayInterval = setInterval(placeBet, 100);
                 document.getElementById('autoPlayButton').textContent = 'Stop Auto';
                 document.getElementById('placeBetButton').disabled = true;
@@ -624,7 +702,7 @@
                 clearInterval(autoPlayInterval);
                 autoPlayInterval = null;
                 document.getElementById('autoPlayButton').textContent = 'Auto Play';
-                document.getElementById('placeBetButton').disabled = false;
+                document.getElementById('placeBetButton').disabled = balance <= DEBT_LIMIT;
                 isSimulating = false;
             }
         }
@@ -664,11 +742,7 @@
             arrow.classList.toggle('active');
         }
 
-        // Slider event listeners and initialization
-        const depositSlider = document.getElementById('depositSlider');
-        const betPercentSlider = document.getElementById('betPercentSlider');
-        const chaseFactorSlider = document.getElementById('chaseFactorSlider');
-
+        // Initialize sliders
         function initializeSliders() {
             // Initialize deposit slider
             depositSlider.addEventListener('input', function() {
@@ -701,6 +775,10 @@
         document.getElementById('resetButton').addEventListener('click', resetSimulation);
 
         // Initialize the simulation
+        const depositSlider = document.getElementById('depositSlider');
+        const betPercentSlider = document.getElementById('betPercentSlider');
+        const chaseFactorSlider = document.getElementById('chaseFactorSlider');
+        
         initializeSliders();
         resetSimulation();
     </script>
