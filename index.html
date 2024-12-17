@@ -122,29 +122,6 @@
             background: transparent;
         }
 
-        input[type="range"]::-moz-range-track {
-            height: 8px;
-            background: #E2E8F0;
-            border-radius: 4px;
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            height: 20px;
-            width: 20px;
-            border-radius: 50%;
-            background: var(--finmango-orange);
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        input[type="range"]::-moz-range-progress {
-            height: 8px;
-            background: var(--finmango-orange);
-            border-radius: 4px;
-        }
-
         .slider-value {
             min-width: 80px;
             text-align: right;
@@ -629,11 +606,9 @@
         }
 
         function updateDisplay() {
-            // Format balance with negative sign when appropriate
             const balanceText = balance < 0 ? `-$${Math.abs(Math.round(balance)).toLocaleString()}` : `$${Math.round(balance).toLocaleString()}`;
             document.getElementById('balance').textContent = balanceText;
             
-            // Always show red for negative balance, green for positive
             document.getElementById('balance').className = 
                 'stat-value ' + (balance >= 0 ? 'positive-balance' : 'negative-balance');
             
@@ -644,7 +619,6 @@
             balanceChart.data.datasets[0].data.push(balance);
             balanceChart.update();
 
-            // Update button states
             const betDisabled = balance <= DEBT_LIMIT;
             document.getElementById('placeBetButton').disabled = betDisabled || isSimulating;
             if (betDisabled) {
@@ -652,20 +626,11 @@
             }
         }
 
-        // Betting mechanics
         function calculateBetAmount() {
-            // For negative balances, use the absolute value for calculation
             const currentBalance = Math.abs(balance);
-            // Calculate base amount from current balance (whether positive or negative)
             const baseAmount = (currentBalance * (betPercentSlider.value / 100));
-            
-            // Apply chase factor if previous bet was a loss
             const chaseFactor = lastBetLoss > 0 ? (chaseFactorSlider.value / 100) : 1;
-            
-            // Calculate final bet amount
             const betAmount = baseAmount * chaseFactor;
-            
-            // Allow betting even when in debt, until hitting debt limit
             return Math.min(betAmount, Math.abs(DEBT_LIMIT - balance));
         }
 
@@ -682,7 +647,7 @@
                 return;
             }
 
-            const winProbability = 0.477; // True probability based on -110 odds
+            const winProbability = 0.477;
             const randomValue = Math.random();
             const won = randomValue < winProbability;
 
@@ -697,17 +662,15 @@
             }
 
             betsPlaced++;
-            balance = Math.round(balance * 100) / 100; // Round to 2 decimal places
+            balance = Math.round(balance * 100) / 100;
             updateDisplay();
 
-            // Check for debt limit after updating display
             if (balance <= DEBT_LIMIT) {
                 stopAutoPlay();
                 alert("You've hit your credit limit of -$10,000. No more bets allowed.");
             }
         }
 
-        // Auto play functionality
         function startAutoPlay() {
             if (!autoPlayInterval && balance > DEBT_LIMIT) {
                 autoPlayInterval = setInterval(placeBet, 100);
@@ -735,7 +698,6 @@
             }
         }
 
-        // Reset functionality
         function resetSimulation() {
             stopAutoPlay();
             
@@ -754,7 +716,6 @@
             updateDisplay();
         }
 
-        // Toggle sections functionality
         function toggleSection(sectionId) {
             const content = document.getElementById(`${sectionId}-content`);
             const arrow = content.previousElementSibling.querySelector('.toggle-arrow');
@@ -764,26 +725,22 @@
 
         // Initialize sliders
         function initializeSliders() {
-            // Initialize deposit slider
             depositSlider.addEventListener('input', function() {
                 document.getElementById('depositValue').textContent = `$${this.value}`;
                 updateSliderBackground(this);
             });
 
-            // Initialize bet percent slider
             betPercentSlider.addEventListener('input', function() {
                 document.getElementById('betPercentValue').textContent = `${this.value}%`;
                 updateSliderBackground(this);
             });
 
-            // Initialize chase factor slider
             chaseFactorSlider.addEventListener('input', function() {
                 const factor = this.value / 100;
                 document.getElementById('chaseFactorValue').textContent = `${factor}x`;
                 updateSliderBackground(this);
             });
 
-            // Initialize all slider backgrounds
             document.querySelectorAll('input[type="range"]').forEach(slider => {
                 updateSliderBackground(slider);
             });
