@@ -579,8 +579,6 @@
                 },
                 scales: {
                     y: {
-                        beginAtZero: false,
-                        suggestedMin: -10000,
                         grid: {
                             color: 'rgba(0, 0, 0, 0.05)'
                         },
@@ -594,7 +592,7 @@
                         },
                         ticks: {
                             callback: function(value) {
-                                return value < 0 ? `-${Math.abs(value).toLocaleString()}` : `${value.toLocaleString()}`;
+                                return `${value.toLocaleString()}`;
                             }
                         }
                     },
@@ -637,11 +635,9 @@
         }
 
         function updateDisplay() {
-            const balanceText = balance < 0 ? `-${Math.abs(Math.round(balance)).toLocaleString()}` : `${Math.round(balance).toLocaleString()}`;
-            document.getElementById('balance').textContent = balanceText;
-            
+            document.getElementById('balance').textContent = `${Math.round(balance).toLocaleString()}`;
             document.getElementById('balance').className = 
-                'stat-value ' + (balance >= 0 ? 'positive-balance' : 'negative-balance');
+                'stat-value ' + (balance >= initialBalance ? 'positive-balance' : 'negative-balance');
             
             document.getElementById('wagered').textContent = `${Math.round(totalWagered).toLocaleString()}`;
             document.getElementById('bets').textContent = betsPlaced.toString();
