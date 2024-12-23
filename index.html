@@ -549,19 +549,19 @@
                     data: [1000],
                     borderColor: function(context) {
                         const value = context.raw;
-                        return value < 0 ? '#FF4242' : '#8AC25E';
+                        return value < initialBalance ? '#FF4242' : '#8AC25E';
                     },
                     backgroundColor: function(context) {
                         const value = context.raw;
-                        return value < 0 ? 'rgba(255, 66, 66, 0.1)' : 'rgba(138, 194, 94, 0.1)';
+                        return value < initialBalance ? 'rgba(255, 66, 66, 0.1)' : 'rgba(138, 194, 94, 0.1)';
                     },
                     segment: {
                         borderColor: function(context) {
                             const prev = context.p0.parsed.y;
                             const next = context.p1.parsed.y;
-                            if (prev < 0 && next < 0) return '#FF4242';
-                            if (prev >= 0 && next >= 0) return '#8AC25E';
-                            return createGradient(ctx, prev < 0);
+                            if (prev < initialBalance && next < initialBalance) return '#FF4242';
+                            if (prev >= initialBalance && next >= initialBalance) return '#8AC25E';
+                            return createGradient(ctx, prev < initialBalance);
                         }
                     },
                     tension: 0.3,
