@@ -124,6 +124,7 @@
             color: var(--text-black);
             font-size: 1rem;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         select:focus {
@@ -483,7 +484,6 @@
             <h1 class="title">Modern Sports Betting Reality Check</h1>
             <p class="subtitle">Experience the reality of online sports betting through this interactive simulation</p>
         </header>
-
         <div class="simulation-controls">
             <div class="control-group">
                 <label class="control-label">Initial Deposit</label>
@@ -600,7 +600,7 @@
                         </div>
                         <div class="awareness-card">
                             <h4>Time and Sleep Impact</h4>
-                            <p>The 24/7 nature of online betting can significantly disrupt daily routines. Late-night games, constant score checking, and stress from losses often lead to sleep disruption and decreased well-being.</p>
+                            <p>Extended betting sessions can severely impact daily life. Late-night games, constant score checking, and mounting losses create a cycle of stress and sleep disruption that affects overall well-being.</p>
                         </div>
                     </div>
 
@@ -638,7 +638,7 @@
                         </div>
                         <div class="awareness-card">
                             <h4>Parlay Bets</h4>
-                            <p>Multi-game parlays offer higher payouts but worse odds:</p>
+                            <p>Multi-game parlays have higher payouts but worse odds:</p>
                             <ul>
                                 <li>2-team parlay (+260): 22.7% chance to win</li>
                                 <li>3-team parlay (+600): 10.8% chance to win</li>
@@ -680,7 +680,19 @@
         let autoPlayInterval = null;
         let isSimulating = false;
         const DEBT_LIMIT = -10000;
-        const MAX_AUTO_BETS = 100;
+        const MAX_AUTO_BETS = 500;  // Increased to 500 bets
+
+        // Enhanced notification system for longer sessions
+        const NOTIFICATIONS = [
+            { title: "🔥 Hot Streak Potential!", message: "Your next bet could be the big winner! Deposit now for a 10% bonus!" },
+            { title: "💫 Special Offer!", message: "Feeling down? Get a risk-free bet up to $500!" },
+            { title: "🎯 Near Miss!", message: "So close! Your parlay was just one leg away from a huge payout!" },
+            { title: "⚡ Quick Recovery Offer!", message: "Double your deposit in the next 10 minutes!" },
+            { title: "🌙 Late Night Special!", message: "Can't sleep? Night owls get 20% bonus on deposits!" },
+            { title: "🎲 Chase Special!", message: "Lost 5 in a row? Next bet is risk-free!" },
+            { title: "💎 VIP Status Alert!", message: "Your recent activity qualifies you for VIP status!" },
+            { title: "🎉 Milestone Bonus!", message: "You've placed 100 bets! Claim your loyalty reward!" }
+        ];
 
         // Betting odds and probabilities
         const ODDS = {
@@ -688,15 +700,6 @@
             parlay2: { probability: 0.227, payout: 3.60 },
             parlay3: { probability: 0.108, payout: 7.00 }
         };
-
-        // Notification templates
-        const NOTIFICATIONS = [
-            { title: "🔥 Hot Streak Potential!", message: "Your next bet could be the big winner! Deposit now for a 10% bonus!" },
-            { title: "💫 Special Offer!", message: "Feeling down? Get a risk-free bet up to $500!" },
-            { title: "🎯 Near Miss!", message: "So close! Your parlay was just one leg away from a huge payout!" },
-            { title: "⚡ Quick Recovery Offer!", message: "Double your deposit in the next 10 minutes!" }
-        ];
-        
         function showNotification(index) {
             const notification = document.createElement('div');
             notification.className = 'notification';
@@ -716,29 +719,37 @@
         }
 
         function updatePsychologicalMeters() {
+            // Enhanced stress calculation for longer sessions
             const stressPercentage = Math.min(100, Math.max(0, 
-                (consecutiveLosses * 15) + 
-                (Math.abs(balance) / 1000 * 10) + 
-                (timeSpent / 5)
+                (consecutiveLosses * 12) + // Reduced per-loss impact for longer sessions
+                (Math.abs(balance) / 1000 * 8) + // Financial stress
+                (timeSpent / 12 * 15) + // Time-based stress
+                (betsPlaced / MAX_AUTO_BETS * 25) // Cumulative betting stress
             ));
+            
             document.getElementById('stressMeter').style.width = `${stressPercentage}%`;
             document.getElementById('stressLevel').textContent = 
-                stressPercentage < 30 ? 'Low' :
-                stressPercentage < 60 ? 'Moderate' :
-                stressPercentage < 85 ? 'High' : 'Severe';
+                stressPercentage < 25 ? 'Low' :
+                stressPercentage < 50 ? 'Moderate' :
+                stressPercentage < 75 ? 'High' : 'Severe';
 
-            document.getElementById('timeMeter').style.width = `${(timeSpent / 24) * 100}%`;
+            // Enhanced time impact calculation
+            const timePercentage = Math.min(100, (timeSpent / 48) * 100); // Based on 48-hour scale
+            document.getElementById('timeMeter').style.width = `${timePercentage}%`;
             document.getElementById('timeSpent').textContent = `${timeSpent.toFixed(1)} hours`;
 
+            // Enhanced sleep impact calculation
             const sleepPercentage = Math.min(100, Math.max(0, 
-                (timeSpent / 3 * 20) + 
-                (stressPercentage / 2)
+                (timeSpent / 6 * 20) + // Every 6 hours impacts sleep
+                (stressPercentage / 2) + // Stress affects sleep
+                (betsPlaced / MAX_AUTO_BETS * 30) // Cumulative betting affects sleep
             ));
+            
             document.getElementById('sleepMeter').style.width = `${sleepPercentage}%`;
             document.getElementById('sleepImpact').textContent = 
-                sleepPercentage < 30 ? 'Normal' :
-                sleepPercentage < 60 ? 'Disrupted' :
-                sleepPercentage < 85 ? 'Poor' : 'Severe';
+                sleepPercentage < 25 ? 'Normal' :
+                sleepPercentage < 50 ? 'Disrupted' :
+                sleepPercentage < 75 ? 'Poor' : 'Severe';
         }
 
         // Initialize Chart
@@ -800,6 +811,12 @@
                                 size: 14,
                                 weight: '500'
                             }
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                // Show fewer x-axis labels for better readability with 500 bets
+                                return value % 50 === 0 ? value : '';
+                            }
                         }
                     }
                 },
@@ -831,7 +848,7 @@
             if (betDisabled && autoPlayInterval) {
                 stopAutoPlay();
                 if (betsPlaced >= MAX_AUTO_BETS) {
-                    alert("Simulation complete: 100 bets placed.");
+                    alert("Simulation complete: 500 bets placed. Notice the psychological impact of extended betting.");
                 }
             }
         }
@@ -847,7 +864,18 @@
             balance += amount;
             totalDeposited += amount;
             timeSpent += 0.25; // Add 15 minutes for deposit process
-            showNotification(1); // Show special offer notification
+            
+            // Show different deposit-related notifications based on session progress
+            if (betsPlaced > 400) {
+                showNotification(4); // Late night special
+            } else if (consecutiveLosses > 5) {
+                showNotification(5); // Chase special
+            } else if (totalDeposited > 5000) {
+                showNotification(6); // VIP status
+            } else {
+                showNotification(1); // Standard special offer
+            }
+            
             updateDisplay();
         }
 
@@ -860,7 +888,7 @@
 
             if (betsPlaced >= MAX_AUTO_BETS) {
                 stopAutoPlay();
-                alert("Simulation complete: 100 bets placed.");
+                alert("Simulation complete: 500 bets placed. Notice the psychological impact of extended betting.");
                 return;
             }
 
@@ -882,13 +910,17 @@
             if (won) {
                 balance += (betAmount * (betOdds.payout - 1));
                 consecutiveLosses = 0;
-                if (betsPlaced > 5) showNotification(0); // Show hot streak notification
+                if (betsPlaced > 5) {
+                    showNotification(0); // Hot streak
+                }
             } else {
                 balance -= betAmount;
                 consecutiveLosses++;
                 if (consecutiveLosses > 2) {
                     if (betType !== 'single') {
                         showNotification(2); // Near miss for parlays
+                    } else if (betsPlaced > 100) {
+                        showNotification(7); // Milestone bonus
                     } else {
                         showNotification(3); // Recovery offer
                     }
@@ -897,6 +929,11 @@
 
             betsPlaced++;
             updateDisplay();
+
+            // Check for psychological impact milestones
+            if (betsPlaced % 100 === 0) {
+                showNotification(7); // Show milestone notification
+            }
         }
 
         function startAutoPlay() {
