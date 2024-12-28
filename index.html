@@ -489,8 +489,9 @@
             <div class="control-group">
                 <label class="control-label">Initial Deposit</label>
                 <div class="slider-container">
-                    <input type="range" id="depositSlider" min="100" max="
-        <input type="range" id="depositSlider" min="100" max="5000" step="100" value="1000">
+                    <input type="range" id="depositSlider" min="100" max
+                        
+    <input type="range" id="depositSlider" min="100" max="5000" step="100" value="1000">
                     <span class="slider-value" id="depositValue">$1,000</span>
                 </div>
             </div>
@@ -557,7 +558,7 @@
             <div class="stat-card">
                 <div class="stat-label">Total Deposited</div>
                 <div class="stat-value" id="totalDeposited">$1,000</div>
-        </div>
+            </div>
             <div class="stat-card">
                 <div class="stat-label">Total Wagered</div>
                 <div class="stat-value" id="wagered">$0</div>
@@ -809,9 +810,11 @@
                             color: 'rgba(0, 0, 0, 0.05)'
                         },
                         title: {
-                            display: true,
+                            display:
+        display: true,
                             text: 'Number of Bets',
-                            font: {size: 14,
+                            font: {
+                                size: 14,
                                 weight: '500'
                             }
                         },
@@ -836,7 +839,6 @@
             document.getElementById('totalDeposited').textContent = `$${Math.round(totalDeposited).toLocaleString()}`;
             document.getElementById('wagered').textContent = `$${Math.round(totalWagered).toLocaleString()}`;
             
-            // Updated to include profit/loss calculation
             const profitLoss = balance - totalDeposited;
             const profitLossElement = document.getElementById('profitLoss');
             profitLossElement.textContent = `$${Math.round(profitLoss).toLocaleString()}`;
@@ -981,8 +983,8 @@
             isSimulating = false;
 
             balanceChart.data.labels = ['Start'];
-            balanceChart.data.datasets[0].data = [balance];
-            balanceChart.data.datasets[1].data = [totalDeposited];
+            balanceChart.data.datasets[0].data = [initialValue];
+            balanceChart.data.datasets[1].data = [initialValue];
             balanceChart.update();
 
             document.getElementById('placeBetButton').disabled = false;
@@ -1003,9 +1005,11 @@
 
         // Initialize sliders
         function initializeSliders() {
+            // Add event listener for deposit slider
             depositSlider.addEventListener('input', function() {
                 document.getElementById('depositValue').textContent = `$${this.value}`;
                 updateSliderBackground(this);
+                resetSimulation(); // Reset simulation when initial deposit changes
             });
 
             fixedBetSlider.addEventListener('input', function() {
