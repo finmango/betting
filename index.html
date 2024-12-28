@@ -828,3 +828,125 @@
     </script>
 </body>
 </html>
+
+
+</script>
+
+        <!-- Adding content sections -->
+        <div class="toggle-section">
+            <button class="toggle-header" onclick="toggleSection('understanding')">
+                <span class="toggle-title">Understanding Online Sports Betting</span>
+                <svg class="toggle-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <div class="toggle-content" id="understanding-content">
+                <div class="toggle-inner">
+                    <div class="awareness-grid">
+                        <div class="awareness-card">
+                            <h4>The Digital Acceleration</h4>
+                            <p>Online betting apps remove traditional barriers and friction points that once limited betting frequency and amounts. Push notifications, one-click deposits, and 24/7 access can lead to more frequent betting than intended.</p>
+                        </div>
+                        <div class="awareness-card">
+                            <h4>Psychological Design</h4>
+                            <p>Modern betting apps use sophisticated design techniques similar to social media platforms to maximize engagement. Features like "cash out," live betting, and parlay builders are specifically designed to encourage more betting.</p>
+                        </div>
+                        <div class="awareness-card">
+                            <h4>The Chase Response</h4>
+                            <p>"Chasing losses" - increasing bet sizes to recover previous losses - is a common behavior that online platforms make easier than ever. This simulator demonstrates how this pattern typically leads to larger losses.</p>
+                        </div>
+                        <div class="awareness-card">
+                            <h4>Time and Sleep Impact</h4>
+                            <p>Extended betting sessions can severely impact daily life. Late-night games, constant score checking, and mounting losses create a cycle of stress and sleep disruption that affects overall well-being.</p>
+                        </div>
+                    </div>
+
+                    <div class="resources-section">
+                        <h4>Need Support?</h4>
+                        <ul class="resources-list">
+                            <li>National Problem Gambling Helpline: 1-800-522-4700 (24/7 Confidential)</li>
+                            <li>Gamblers Anonymous: www.gamblersanonymous.org</li>
+                            <li>National Council on Problem Gambling: www.ncpgambling.org</li>
+                            <li>Self-Exclusion Programs: Available through your state's gaming commission</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toggle-section">
+            <button class="toggle-header" onclick="toggleSection('math')">
+                <span class="toggle-title">How Does the Math Work?</span>
+                <svg class="toggle-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <div class="toggle-content" id="math-content">
+                <div class="toggle-inner">
+                    <div class="awareness-grid">
+                        <div class="awareness-card">
+                            <h4>Single Bets</h4>
+                            <p>Standard sports bet odds of -110 mean:</p>
+                            <ul>
+                                <li>Bet $110 to win $100 (or proportional amounts)</li>
+                                <li>True probability of winning: 47.7%</li>
+                                <li>House edge: 4.5% per bet</li>
+                            </ul>
+                        </div>
+                        <div class="awareness-card">
+                            <h4>Parlay Bets</h4>
+                            <p>Multi-game parlays have higher payouts but worse odds:</p>
+                            <ul>
+                                <li>2-team parlay (+260): 22.7% chance to win</li>
+                                <li>3-team parlay (+600): 10.8% chance to win</li>
+                                <li>House edge increases with each added game</li>
+                            </ul>
+                        </div>
+                        <div class="awareness-card">
+                            <h4>The Chase Factor</h4>
+                            <p>Increasing bets after losses is extremely risky:</p>
+                            <ul>
+                                <li>Each bet has independent odds</li>
+                                <li>Previous losses don't affect future chances</li>
+                                <li>Larger bets mean larger potential losses</li>
+                            </ul>
+                        </div>
+                        <div class="awareness-card">
+                            <h4>Long-Term Impact</h4>
+                            <p>The math shows that sustained betting leads to losses:</p>
+                            <ul>
+                                <li>House edge compounds over time</li>
+                                <li>Auto-deposits increase total losses</li>
+                                <li>Recovery becomes increasingly difficult</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+// Add the toggle section function
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const arrow = content.previousElementSibling.querySelector('.toggle-arrow');
+            content.classList.toggle('active');
+            arrow.classList.toggle('active');
+        }
+
+        // Initialize event listeners
+        document.getElementById('placeBetButton').addEventListener('click', placeBet);
+        document.getElementById('autoPlayButton').addEventListener('click', toggleAutoPlay);
+        document.getElementById('resetButton').addEventListener('click', resetSimulation);
+
+        // Initialize the simulation
+        const depositSlider = document.getElementById('depositSlider');
+        const fixedBetSlider = document.getElementById('fixedBetSlider');
+        const tiltSlider = document.getElementById('tiltSlider');
+        const autoDepositSlider = document.getElementById('autoDepositSlider');
+        
+        initializeSliders();
+        resetSimulation();
+    </script>
